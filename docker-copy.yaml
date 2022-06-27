@@ -1,0 +1,56 @@
+version: "3"
+services:
+  # frontend react service  
+  frontend:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    
+    image: fullstack-frontend:v1
+    ports:
+      - 3000:3000
+   
+    stdin_open: true 
+    
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # backend services
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile 
+    
+    image: fullstack-backend:v1
+    ports:
+      - 5000:5000
+    
+    stdin_open: true  
+  
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+  
+  # Database services
+  mongo:
+    image: mongo
+    network_mode: host
+    ports:
+      - 27017:27017
+    restart: always    
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+  
+
+
+
+
